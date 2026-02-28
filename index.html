@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>parallax</title>
-  <meta name="description" content="World press seen from every angle. Quality journalism from 27 outlets in 10 languages.">
+  <title>活字</title>
+  <meta name="description" content="活字 — world press. Quality journalism from 57 outlets in 10 languages.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,8 @@
     }
     /* ── RESET ───────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 13px; }
+    html { font-size: 15px; }
+    @media (max-width: 640px) { html { font-size: 16px; } }
     body {
       background: var(--bg);
       color: var(--text);
@@ -59,14 +60,14 @@
       gap: 1rem;
     }
     #wordmark {
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.2em;
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
       color: var(--accent);
-      text-transform: uppercase;
       flex-shrink: 0;
       padding-right: 1rem;
       border-right: 1px solid var(--border);
+      line-height: 1;
     }
     #search-wrap { flex: 1; max-width: 280px; position: relative; }
     #search-wrap::before {
@@ -121,6 +122,49 @@
       overflow-x: hidden;
     }
     .sb-section { border-bottom: 1px solid var(--border-soft); }
+    /* category headers in sidebar */
+    .sb-cat-header {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 0.85rem 0.25rem;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      cursor: pointer;
+      user-select: none;
+      border-top: 1px solid var(--border-soft);
+      transition: color 0.1s;
+    }
+    .sb-cat-header:first-child { border-top: none; }
+    .sb-cat-header:hover { color: var(--text); }
+    .sb-cat-header.active { color: var(--accent); }
+    .sb-cat-toggle {
+      margin-left: auto;
+      font-size: 0.6rem;
+      opacity: 0.4;
+      transition: transform 0.15s;
+    }
+    .sb-cat-feeds { overflow: hidden; }
+    .sb-cat-feeds.collapsed { display: none; }
+    .sb-loading {
+      padding: 0.3rem 0.85rem 0.3rem 2rem;
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .sb-spinner {
+      width: 7px; height: 7px;
+      border: 1px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
     .sb-head {
       padding: 0.65rem 0.85rem 0.25rem;
       font-size: 0.58rem;
@@ -143,6 +187,15 @@
     .sb-item:hover { background: var(--bg-hover); color: var(--text); }
     .sb-item.active { color: var(--text-bright); background: var(--bg-active); border-left-color: var(--accent); }
     .sb-flag { font-size: 0.83rem; line-height: 1; flex-shrink: 0; }
+    .sb-cc {
+      font-size: 0.57rem;
+      color: var(--text-dim);
+      opacity: 0.45;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+      min-width: 1.6rem;
+      font-family: var(--mono);
+    }
     .sb-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .sb-lang { font-size: 0.57rem; color: var(--text-dim); opacity: 0.5; flex-shrink: 0; }
     .sb-count { font-size: 0.6rem; color: var(--text-dim); flex-shrink: 0; min-width: 18px; text-align: right; }
@@ -163,91 +216,114 @@
       transition: color 0.1s, border-color 0.1s;
     }
     .f-btn:hover, .f-btn.on { color: var(--accent); border-color: var(--accent); }
-    #xlate-bar {
-      padding: 0.32rem 1rem; border-bottom: 1px solid var(--border-soft);
-      font-size: 0.65rem; color: var(--text-dim);
-      background: var(--accent-dim);
-      display: flex; gap: 0.55rem; align-items: center;
-    }
-    #xlate-bar.hide { display: none; }
-    #xlate-bar button { color: var(--accent); font-size: 0.65rem; }
-    #xlate-bar button:hover { text-decoration: underline; }
     /* ── ARTICLE LIST ────────────────────────────────────── */
     #articles { flex: 1; overflow-y: auto; }
+
     .article {
-      border-bottom: 1px solid var(--border-soft);
-      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 1.1rem;
       cursor: pointer;
       transition: background 0.07s;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0 0.65rem;
     }
     .article:hover { background: var(--bg-hover); }
-    .article.read { opacity: 0.35; }
-    .article.read:hover { opacity: 0.6; }
-    .article.active { background: var(--bg-active); border-left: 2px solid var(--accent); padding-left: calc(1rem - 2px); }
-    .a-meta {
-      grid-column: 1 / -1;
-      font-size: 0.6rem; color: var(--text-dim);
-      display: flex; align-items: center; gap: 0.3rem;
-      margin-bottom: 0.18rem;
+    .article.read { opacity: 0.32; }
+    .article.read:hover { opacity: 0.58; }
+    .article.active {
+      background: var(--bg-active);
+      border-left: 2px solid var(--accent);
+      padding-left: calc(1.1rem - 2px);
     }
-    .a-flag { font-size: 0.78rem; }
+
+    .a-meta {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.3rem;
+    }
+    .a-cc {
+      font-size: 0.57rem;
+      color: var(--text-dim);
+      opacity: 0.45;
+      letter-spacing: 0.04em;
+      font-family: var(--mono);
+      flex-shrink: 0;
+      min-width: 1.6rem;
+    }
     .a-src { color: var(--accent); letter-spacing: 0.02em; }
     .a-dot { color: var(--border); }
-    .a-time { margin-left: auto; }
+    .a-lang {
+      font-size: 0.55rem;
+      border: 1px solid var(--border-soft);
+      padding: 0.02rem 0.25rem;
+      color: var(--text-dim);
+      opacity: 0.6;
+    }
+    .a-time { margin-left: auto; font-size: 0.57rem; }
+    .a-read-time { font-size: 0.57rem; color: var(--text-dim); opacity: 0.45; }
+
     .a-title {
-      grid-column: 1;
       font-family: var(--sans);
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       font-weight: 400;
       color: var(--text-bright);
-      line-height: 1.43;
+      line-height: 1.45;
+      margin-bottom: 0.28rem;
     }
     .article:hover .a-title { color: #fff; }
-    .a-badge {
-      grid-column: 2; grid-row: 2; align-self: start;
-      font-size: 0.57rem; border: 1px solid var(--border-soft);
-      color: var(--text-dim); padding: 0.08rem 0.28rem;
-      white-space: nowrap; height: fit-content; margin-top: 0.1rem;
-    }
+
     .a-desc {
-      grid-column: 1 / -1; grid-row: 3;
       font-family: var(--sans);
-      font-size: 0.76rem; color: var(--text-dim);
-      line-height: 1.6; margin-top: 0.28rem;
+      font-size: 0.73rem;
+      color: var(--text-dim);
+      line-height: 1.55;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
     .compact .a-desc { display: none; }
-    .article.active .a-desc {
-      -webkit-line-clamp: 6;
+
+    /* actions row — only on hover, desktop */
+    .a-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.35rem;
+      opacity: 0;
+      transition: opacity 0.12s;
+      height: 0;
+      overflow: hidden;
     }
-    .a-xlate-btn {
-      grid-column: 1; grid-row: 4;
-      font-size: 0.6rem; color: var(--text-dim);
-      margin-top: 0.28rem; opacity: 0;
-      transition: opacity 0.1s;
-      width: fit-content;
-      display: flex; align-items: center; gap: 0.22rem;
+    .article:hover .a-actions {
+      opacity: 1;
+      height: auto;
     }
-    .article:hover .a-xlate-btn { opacity: 1; }
-    .a-xlate-btn:hover { color: var(--accent); }
-    .a-open-link {
-      grid-column: 1; grid-row: 5;
+    .a-action-btn {
       font-size: 0.6rem;
       color: var(--text-dim);
-      margin-top: 0.2rem;
-      opacity: 0;
-      transition: opacity 0.1s;
-      width: fit-content;
-      display: flex; align-items: center; gap: 0.22rem;
+      transition: color 0.1s;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: var(--mono);
     }
-    .article:hover .a-open-link { opacity: 0.6; }
-    .a-open-link:hover { opacity: 1 !important; color: var(--accent); }
+    .a-action-btn:hover { color: var(--accent); }
+    .a-action-btn.saved { color: var(--accent); opacity: 1; }
+    .a-open-link {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      transition: color 0.1s;
+    }
+    .a-open-link:hover { color: var(--accent); }
+
+    @media (max-width: 640px) {
+      /* on mobile, always show actions (no hover state) */
+      .a-actions { opacity: 1; height: auto; }
+      .article { padding: 0.85rem 0.9rem; }
+    }
     .state-row {
       padding: 0.75rem 1rem; font-size: 0.7rem; color: var(--text-dim);
       display: flex; align-items: center; gap: 0.45rem;
@@ -477,29 +553,6 @@
     .src-tag.longform     { border-color: #3df07833; color: var(--accent); }
     .src-tag.independent  { border-color: var(--border); color: var(--text-dim); }
 
-    /* ── READING TIME ────────────────────────────────────── */
-    .a-read-time {
-      font-size: 0.6rem;
-      color: var(--text-dim);
-      opacity: 0.6;
-      margin-left: 0.3rem;
-    }
-
-    /* ── SAVE BUTTON ─────────────────────────────────────── */
-    .a-save-btn {
-      grid-column: 2; grid-row: 3;
-      font-size: 0.6rem;
-      color: var(--text-dim);
-      border: 1px solid transparent;
-      padding: 0.08rem 0.3rem;
-      align-self: end;
-      opacity: 0;
-      transition: opacity 0.1s, color 0.1s;
-    }
-    .article:hover .a-save-btn { opacity: 1; }
-    .a-save-btn:hover { color: var(--accent); }
-    .a-save-btn.saved { color: var(--accent); opacity: 1; }
-
     /* reader save button */
     #r-save-btn {
       font-size: 0.65rem;
@@ -509,12 +562,150 @@
       transition: color 0.1s, border-color 0.1s;
     }
     #r-save-btn:hover, #r-save-btn.saved { color: var(--accent); border-color: var(--accent); }
+    /* ── ARTICLE MODAL (mobile) ──────────────────────────── */
+    #article-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--bg-panel);
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #article-modal.open {
+      display: flex;
+    }
+    #modal-top {
+      height: 44px;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 0.6rem;
+    }
+    #modal-close {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+    }
+    #modal-close:hover { color: var(--accent); border-color: var(--accent); }
+    #modal-open {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+    #modal-open:hover { color: var(--accent); border-color: var(--accent); }
+    #modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem 1.1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    #modal-source {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    #modal-src { color: var(--accent); }
+    #modal-title {
+      font-family: var(--sans);
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--text-bright);
+      line-height: 1.45;
+      margin-bottom: 0.75rem;
+    }
+    #modal-date {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    #modal-desc {
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.85;
+      margin-bottom: 1.25rem;
+    }
+    #modal-excerpt-note {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      border: 1px solid var(--border-soft);
+      padding: 0.6rem 0.75rem;
+      line-height: 1.55;
+      margin-bottom: 1.1rem;
+    }
+    #modal-excerpt-note a { color: var(--accent); }
+    #modal-xlate-wrap {
+      margin-top: 0.5rem;
+    }
+    #modal-xlate-btn {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      min-height: 32px;
+    }
+    #modal-xlate-btn:hover { color: var(--accent); border-color: var(--accent); }
+    #modal-xlated {
+      margin-top: 0.7rem;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.85;
+      display: none;
+    }
+    #modal-xlated.show { display: block; }
+    #modal-src-notes {
+      margin-top: 1.25rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border-soft);
+    }
+    #modal-src-notes-head {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      opacity: 0.5;
+      margin-bottom: 0.35rem;
+    }
+    #modal-src-notes-text {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+    #modal-src-tags {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+      margin-top: 0.45rem;
+    }
   </style>
 </head>
 <body>
 <div id="topbar">
   <button id="mob-toggle" onclick="toggleMobileSidebar()">☰ sources</button>
-  <div id="wordmark">parallax</div>
+  <div id="wordmark">活字</div>
   <div id="search-wrap">
     <input type="search" id="search" placeholder="search headlines…" autocomplete="off">
   </div>
@@ -529,10 +720,9 @@
 <div id="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
 <div id="layout">
   <div id="sidebar">
-    <div class="sb-section">
-      <div class="sb-head">feeds</div>
+    <div class="sb-section" style="border-bottom: 1px solid var(--border-soft);">
       <div class="sb-item active" data-id="all" onclick="doSelect('all')">
-        <span class="sb-flag">◈</span>
+        <span class="sb-flag" style="font-size:0.85rem;opacity:0.7">活</span>
         <span class="sb-name">all sources</span>
         <span class="sb-count" id="c-all">—</span>
       </div>
@@ -553,12 +743,6 @@
         <button class="f-btn" id="s-source" onclick="doSort('source')">source</button>
       </div>
     </div>
-    <div id="xlate-bar" class="hide">
-      <span>non-english feed —</span>
-      <button onclick="translateAll()">translate all headlines</button>
-      <span style="color:var(--border)">·</span>
-      <button onclick="document.getElementById('xlate-bar').classList.add('hide')">dismiss</button>
-    </div>
     <div id="articles">
       <div class="state-row"><div class="spinner"></div> fetching feeds…</div>
     </div>
@@ -570,8 +754,8 @@
     </div>
     <div id="footer">
       <div>
-        parallax
-        <span class="footer-sep">·</span>
+        活字
+        <span class="footer-sep">—</span>
         world press, every angle
       </div>
       <div>
@@ -615,44 +799,107 @@
     <div id="tt-notes"></div>
   </div>
 </div>
+<!-- ARTICLE MODAL — shown on mobile instead of reader panel -->
+<div id="article-modal">
+  <div id="modal-top">
+    <button id="modal-close" onclick="closeModal()">✕ back</button>
+    <button id="modal-open" onclick="openModalLink()">↗ full article</button>
+  </div>
+  <div id="modal-body">
+    <div id="modal-source">
+      <span id="modal-flag"></span>
+      <span id="modal-src"></span>
+      <span id="modal-time"></span>
+    </div>
+    <div id="modal-title"></div>
+    <div id="modal-date"></div>
+    <div id="modal-desc"></div>
+    <div id="modal-excerpt-note">
+      RSS excerpt only. <a id="modal-full-link" href="#" target="_blank" rel="noopener">Read the full article ↗</a>
+    </div>
+    <div id="modal-xlate-wrap" style="display:none">
+      <button id="modal-xlate-btn" onclick="translateModal()">⟳ translate to english</button>
+      <div id="modal-xlated"></div>
+    </div>
+    <div id="modal-src-notes">
+      <div id="modal-src-notes-head">about this source</div>
+      <div id="modal-src-notes-text"></div>
+      <div id="modal-src-tags"></div>
+    </div>
+  </div>
+</div>
 <script>
 // ─── FEEDS ───────────────────────────────────────────────────────────────────
 const PROXY = url => `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`;
 const FEEDS = [
+  // ── WORLD NEWS ────────────────────────────────────────────────────────────
   // EUROPE — english
-  { id:'guardian',   name:'The Guardian',           flag:'🇬🇧', lang:'en', region:'Europe',     tags:['independent','longform'], notes:'Centre-left British broadsheet. Strong on environment, global affairs, investigative.',     url:'https://www.theguardian.com/world/rss' },
-  { id:'bbc',        name:'BBC World',              flag:'🇬🇧', lang:'en', region:'Europe',     tags:['state-funded','wire'], notes:'UK public broadcaster. Neutral mandate by charter. Broad geographic coverage.',               url:'https://feeds.bbci.co.uk/news/world/rss.xml' },
-  { id:'economist',  name:'The Economist',          flag:'🇬🇧', lang:'en', region:'Europe',     tags:['independent','longform'], notes:'Economically liberal weekly. Exceptional on finance, trade policy, emerging markets.',     url:'https://www.economist.com/finance-and-economics/rss.xml' },
-  { id:'ft',         name:'Financial Times',        flag:'🇬🇧', lang:'en', region:'Europe',     tags:['independent','wire'], notes:'Markets-focused. Best English-language source for European economic policy.',                  url:'https://www.ft.com/rss/home/uk' },
-  { id:'dw',         name:'Deutsche Welle',         flag:'🇩🇪', lang:'en', region:'Europe',     tags:['state-funded'], notes:'German public broadcaster in English. Good on Central/Eastern European affairs.',               url:'https://rss.dw.com/rdf/rss-en-world' },
-  { id:'rfi',        name:'RFI English',            flag:'🇫🇷', lang:'en', region:'Europe',     tags:['state-funded'], notes:'French public radio in English. Strongest African coverage of any source here.',               url:'https://www.rfi.fr/en/rss' },
+  { id:'guardian',    cat:'world-news', name:'The Guardian',           flag:'🇬🇧', cc:'GB', lang:'en', region:'Europe',       tags:['independent','longform'], notes:'Centre-left British broadsheet. Strong on environment, global affairs, investigative.',     url:'https://www.theguardian.com/world/rss' },
+  { id:'bbc',         cat:'world-news', name:'BBC World',              flag:'🇬🇧', cc:'GB', lang:'en', region:'Europe',       tags:['state-funded','wire'],    notes:'UK public broadcaster. Neutral mandate by charter. Broad geographic coverage.',               url:'https://feeds.bbci.co.uk/news/world/rss.xml' },
+  { id:'economist',   cat:'world-news', name:'The Economist',          flag:'🇬🇧', cc:'GB', lang:'en', region:'Europe',       tags:['independent','longform'], notes:'Economically liberal weekly. Exceptional on finance, trade policy, emerging markets.',         url:'https://www.economist.com/finance-and-economics/rss.xml' },
+  { id:'ft',          cat:'world-news', name:'Financial Times',        flag:'🇬🇧', cc:'GB', lang:'en', region:'Europe',       tags:['independent','wire'],     notes:'Markets-focused. Best English-language source for European economic policy.',                  url:'https://www.ft.com/rss/home/uk' },
+  { id:'dw',          cat:'world-news', name:'Deutsche Welle',         flag:'🇩🇪', cc:'DE', lang:'en', region:'Europe',       tags:['state-funded'],           notes:'German public broadcaster in English. Good on Central/Eastern European affairs.',               url:'https://rss.dw.com/rdf/rss-en-world' },
+  { id:'rfi',         cat:'world-news', name:'RFI English',            flag:'🇫🇷', cc:'FR', lang:'en', region:'Europe',       tags:['state-funded'],           notes:'French public radio in English. Strongest African coverage of any source here.',               url:'https://www.rfi.fr/en/rss' },
   // EUROPE — french
-  { id:'lemonde',    name:'Le Monde',               flag:'🇫🇷', lang:'fr', region:'Europe',     tags:['independent','longform'], notes:'Newspaper of record in France. Analytical, authoritative, centre-left.',                  url:'https://www.lemonde.fr/rss/une.xml' },
-  { id:'liberation', name:'Libération',             flag:'🇫🇷', lang:'fr', region:'Europe',     tags:['independent'], notes:'Left-leaning French daily. More opinion-heavy than Le Monde. Good on social issues.',           url:'https://www.liberation.fr/arc/outboundfeeds/rss-all/' },
-  { id:'letemps',    name:'Le Temps',               flag:'🇨🇭', lang:'fr', region:'Europe',     tags:['independent'], notes:'Swiss French daily. Liberal, internationally minded. Strong on finance and diplomacy.',         url:'https://www.letemps.ch/articles.rss' },
+  { id:'lemonde',     cat:'world-news', name:'Le Monde',               flag:'🇫🇷', cc:'FR', lang:'fr', region:'Europe',       tags:['independent','longform'], notes:'Newspaper of record in France. Analytical, authoritative, centre-left.',                      url:'https://www.lemonde.fr/rss/une.xml' },
+  { id:'liberation',  cat:'world-news', name:'Libération',             flag:'🇫🇷', cc:'FR', lang:'fr', region:'Europe',       tags:['independent'],            notes:'Left-leaning French daily. More opinion-heavy than Le Monde. Good on social issues.',           url:'https://www.liberation.fr/arc/outboundfeeds/rss-all/' },
+  { id:'letemps',     cat:'world-news', name:'Le Temps',               flag:'🇨🇭', cc:'CH', lang:'fr', region:'Europe',       tags:['independent'],            notes:'Swiss French daily. Liberal, internationally minded. Strong on finance and diplomacy.',         url:'https://www.letemps.ch/articles.rss' },
   // EUROPE — german
-  { id:'spiegel',    name:'Der Spiegel',            flag:'🇩🇪', lang:'de', region:'Europe',     tags:['independent','longform'], notes:'Germany\'s most-read news magazine. Investigative tradition. Centre-left.',              url:'https://www.spiegel.de/schlagzeilen/index.rss' },
-  { id:'zeit',       name:'Die Zeit',               flag:'🇩🇪', lang:'de', region:'Europe',     tags:['independent','longform'], notes:'Weekly broadsheet. Long-form, intellectual. Liberal-progressive.',                       url:'https://newsfeed.zeit.de/index' },
-  { id:'nzz',        name:'Neue Zürcher Zeitung',   flag:'🇨🇭', lang:'de', region:'Europe',     tags:['independent'], notes:'Swiss German daily. Classical liberal, free-market. More conservative than Zeit.',              url:'https://www.nzz.ch/recent.rss' },
+  { id:'spiegel',     cat:'world-news', name:'Der Spiegel',            flag:'🇩🇪', cc:'DE', lang:'de', region:'Europe',       tags:['independent','longform'], notes:'Germany\'s most-read news magazine. Investigative tradition. Centre-left.',                    url:'https://www.spiegel.de/schlagzeilen/index.rss' },
+  { id:'zeit',        cat:'world-news', name:'Die Zeit',               flag:'🇩🇪', cc:'DE', lang:'de', region:'Europe',       tags:['independent','longform'], notes:'Weekly broadsheet. Long-form, intellectual. Liberal-progressive.',                             url:'https://newsfeed.zeit.de/index' },
+  { id:'nzz',         cat:'world-news', name:'Neue Zürcher Zeitung',   flag:'🇨🇭', cc:'CH', lang:'de', region:'Europe',       tags:['independent'],            notes:'Swiss German daily. Classical liberal, free-market. More conservative than Zeit.',              url:'https://www.nzz.ch/recent.rss' },
   // EUROPE — other
-  { id:'publico',    name:'Público',                flag:'🇵🇹', lang:'pt', region:'Europe',     tags:['independent'], notes:'Portuguese quality daily. Centre-left. Best domestic source for Portugal/Lusophone world.',    url:'https://feeds.feedburner.com/PublicoRSS' },
-  { id:'elpais',     name:'El País',                flag:'🇪🇸', lang:'es', region:'Europe',     tags:['independent','longform'], notes:'Spain\'s newspaper of record. Strong on Latin America. Centre-left.',                  url:'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada' },
-  { id:'repubblica', name:'La Repubblica',          flag:'🇮🇹', lang:'it', region:'Europe',     tags:['independent'], notes:'Italian daily. Liberal, pro-European. Good on Italian politics and Mediterranean affairs.',    url:'https://www.repubblica.it/rss/homepage/rss2.0.xml' },
+  { id:'publico',     cat:'world-news', name:'Público',                flag:'🇵🇹', cc:'PT', lang:'pt', region:'Europe',       tags:['independent'],            notes:'Portuguese quality daily. Centre-left. Best domestic source for Portugal/Lusophone world.',    url:'https://feeds.feedburner.com/PublicoRSS' },
+  { id:'elpais',      cat:'world-news', name:'El País',                flag:'🇪🇸', cc:'ES', lang:'es', region:'Europe',       tags:['independent','longform'], notes:'Spain\'s newspaper of record. Strong on Latin America. Centre-left.',                          url:'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada' },
+  { id:'repubblica',  cat:'world-news', name:'La Repubblica',          flag:'🇮🇹', cc:'IT', lang:'it', region:'Europe',       tags:['independent'],            notes:'Italian daily. Liberal, pro-European. Good on Italian politics and Mediterranean affairs.',    url:'https://www.repubblica.it/rss/homepage/rss2.0.xml' },
   // AMERICAS
-  { id:'nyt',        name:'New York Times',         flag:'🇺🇸', lang:'en', region:'Americas',   tags:['independent','longform'], notes:'US newspaper of record. Unmatched resources. Centre-left editorial, global reach.',      url:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
-  { id:'wapo',       name:'Washington Post',        flag:'🇺🇸', lang:'en', region:'Americas',   tags:['independent'], notes:'DC-focused. Best on US government, national security, foreign policy.',                       url:'https://feeds.washingtonpost.com/rss/world' },
-  { id:'ap',         name:'Associated Press',       flag:'🇺🇸', lang:'en', region:'Americas',   tags:['wire'], notes:'Non-profit wire service. Factual, unbylined, no editorial line. Feeds most US newspapers.',        url:'https://rsshub.app/apnews/topics/apf-topnews' },
-  { id:'folha',      name:'Folha de S.Paulo',       flag:'🇧🇷', lang:'pt', region:'Americas',   tags:['independent'], notes:'Brazil\'s most-read quality paper. Centre. Essential for Latin American perspective.',          url:'https://feeds.folha.uol.com.br/mundo/rss091.xml' },
-  { id:'lanacion',   name:'La Nación',              flag:'🇦🇷', lang:'es', region:'Americas',   tags:['independent'], notes:'Argentina\'s oldest daily. Conservative, business-oriented. Good on Southern Cone politics.', url:'https://www.lanacion.com.ar/arc/outboundfeeds/rss/' },
+  { id:'nyt',         cat:'world-news', name:'New York Times',         flag:'🇺🇸', cc:'US', lang:'en', region:'Americas',     tags:['independent','longform'], notes:'US newspaper of record. Unmatched resources. Centre-left editorial, global reach.',            url:'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
+  { id:'wapo',        cat:'world-news', name:'Washington Post',        flag:'🇺🇸', cc:'US', lang:'en', region:'Americas',     tags:['independent'],            notes:'DC-focused. Best on US government, national security, foreign policy.',                       url:'https://feeds.washingtonpost.com/rss/world' },
+  { id:'ap',          cat:'world-news', name:'Associated Press',       flag:'🇺🇸', cc:'US', lang:'en', region:'Americas',     tags:['wire'],                   notes:'Non-profit wire service. Factual, no editorial line. Feeds most US newspapers.',              url:'https://rsshub.app/apnews/topics/apf-topnews' },
+  { id:'folha',       cat:'world-news', name:'Folha de S.Paulo',       flag:'🇧🇷', cc:'BR', lang:'pt', region:'Americas',     tags:['independent'],            notes:'Brazil\'s most-read quality paper. Essential for Latin American perspective.',                 url:'https://feeds.folha.uol.com.br/mundo/rss091.xml' },
+  { id:'lanacion',    cat:'world-news', name:'La Nación',              flag:'🇦🇷', cc:'AR', lang:'es', region:'Americas',     tags:['independent'],            notes:'Argentina\'s oldest daily. Conservative, business-oriented. Good on Southern Cone.',          url:'https://www.lanacion.com.ar/arc/outboundfeeds/rss/' },
   // ASIA-PACIFIC
-  { id:'nhk',        name:'NHK World',              flag:'🇯🇵', lang:'en', region:'Asia-Pacific', tags:['state-funded'], notes:'Japan\'s public broadcaster in English. Measured, diplomatic. Strong on East Asia.',        url:'https://www3.nhk.or.jp/rss/news/cat0.xml' },
-  { id:'asahi',      name:'朝日新聞',                flag:'🇯🇵', lang:'ja', region:'Asia-Pacific', tags:['independent'], notes:'Japan\'s second-largest daily. Liberal, pacifist tradition. Read in Japanese.',              url:'https://www.asahi.com/rss/asahi/newsheadlines.rdf' },
-  { id:'scmp',       name:'S. China Morning Post',  flag:'🇭🇰', lang:'en', region:'Asia-Pacific', tags:['independent'], notes:'Hong Kong English daily. Best English-language coverage of China and Southeast Asia.',       url:'https://www.scmp.com/rss/91/feed' },
-  { id:'thehindu',   name:'The Hindu',              flag:'🇮🇳', lang:'en', region:'Asia-Pacific', tags:['independent'], notes:'India\'s newspaper of record. Left-leaning, internationalist. Strong South Asia coverage.',  url:'https://www.thehindu.com/news/international/?service=rss' },
-  { id:'smh',        name:'Sydney Morning Herald',  flag:'🇦🇺', lang:'en', region:'Asia-Pacific', tags:['independent'], notes:'Australia\'s oldest daily. Centre-left. Good on Pacific affairs and China-Australia relations.', url:'https://www.smh.com.au/rss/world.xml' },
+  { id:'nhk',         cat:'world-news', name:'NHK World',              flag:'🇯🇵', cc:'JP', lang:'en', region:'Asia-Pacific', tags:['state-funded'],           notes:'Japan\'s public broadcaster in English. Measured, diplomatic. Strong on East Asia.',            url:'https://www3.nhk.or.jp/rss/news/cat0.xml' },
+  { id:'asahi',       cat:'world-news', name:'朝日新聞',                flag:'🇯🇵', cc:'JP', lang:'ja', region:'Asia-Pacific', tags:['independent'],            notes:'Japan\'s second-largest daily. Liberal, pacifist tradition. Read in Japanese.',                url:'https://www.asahi.com/rss/asahi/newsheadlines.rdf' },
+  { id:'scmp',        cat:'world-news', name:'S. China Morning Post',  flag:'🇭🇰', cc:'HK', lang:'en', region:'Asia-Pacific', tags:['independent'],            notes:'Best English-language coverage of China and Southeast Asia.',                                 url:'https://www.scmp.com/rss/91/feed' },
+  { id:'thehindu',    cat:'world-news', name:'The Hindu',              flag:'🇮🇳', cc:'IN', lang:'en', region:'Asia-Pacific', tags:['independent'],            notes:'India\'s newspaper of record. Left-leaning, internationalist. Strong South Asia.',             url:'https://www.thehindu.com/news/international/?service=rss' },
+  { id:'smh',         cat:'world-news', name:'Sydney Morning Herald',  flag:'🇦🇺', cc:'AU', lang:'en', region:'Asia-Pacific', tags:['independent'],            notes:'Australia\'s oldest daily. Good on Pacific affairs and China-Australia relations.',            url:'https://www.smh.com.au/rss/world.xml' },
   // MENA
-  { id:'aljazeera',  name:'Al Jazeera',             flag:'🇶🇦', lang:'en', region:'MENA',       tags:['state-funded'], notes:'Qatari-funded. Strong Global South perspective. Essential counterpoint to Western framing.',  url:'https://www.aljazeera.com/xml/rss/all.xml' },
-  { id:'haaretz',    name:'Haaretz',                flag:'🇮🇱', lang:'en', region:'MENA',       tags:['independent'], notes:'Israel\'s oldest daily. Left-liberal. Critical of occupation. Unique domestic perspective.',  url:'https://www.haaretz.com/cmlink/1.4' },
+  { id:'aljazeera',   cat:'world-news', name:'Al Jazeera',             flag:'🇶🇦', cc:'QA', lang:'en', region:'MENA',         tags:['state-funded'],           notes:'Qatari-funded. Strong Global South perspective. Essential counterpoint to Western framing.',  url:'https://www.aljazeera.com/xml/rss/all.xml' },
+  { id:'haaretz',     cat:'world-news', name:'Haaretz',                flag:'🇮🇱', cc:'IL', lang:'en', region:'MENA',         tags:['independent'],            notes:'Israel\'s oldest daily. Left-liberal. Critical of occupation. Unique domestic perspective.',  url:'https://www.haaretz.com/cmlink/1.4' },
+  // ── TECHNOLOGY ────────────────────────────────────────────────────────────
+  { id:'mit-tech',    cat:'tech', name:'MIT Tech Review',      flag:'🇺🇸', cc:'US', lang:'en', region:'Analysis',      tags:['independent','longform'], notes:'Rigorous technology journalism from MIT. Best on AI, biotech, and climate tech policy.',     url:'https://www.technologyreview.com/feed/' },
+  { id:'ars',         cat:'tech', name:'Ars Technica',          flag:'🇺🇸', cc:'US', lang:'en', region:'Analysis',      tags:['independent'],            notes:'Technical depth rarely found in trade press. Good on computing, science, and policy.',        url:'https://feeds.arstechnica.com/arstechnica/index' },
+  { id:'ieee',        cat:'tech', name:'IEEE Spectrum',         flag:'🇺🇸', cc:'US', lang:'en', region:'Institutional', tags:['institutional'],          notes:'Engineering perspective. Underrepresented in most aggregators. Strong on hardware and energy.', url:'https://spectrum.ieee.org/rss/fulltext' },
+  { id:'acm',         cat:'tech', name:'ACM TechNews',          flag:'🇺🇸', cc:'US', lang:'en', region:'Institutional', tags:['institutional'],          notes:'Academic computing translated for practitioners. Nothing else covers CS research this broadly.', url:'https://technews.acm.org/rss.xml' },
+  { id:'register',    cat:'tech', name:'The Register',          flag:'🇬🇧', cc:'GB', lang:'en', region:'Analysis',      tags:['independent'],            notes:'British, sardonic, essential on enterprise, security, and the business of tech.',             url:'https://www.theregister.com/headlines.atom' },
+  { id:'rest-world',  cat:'tech', name:'Rest of World',         flag:'🌐', cc:'--', lang:'en', region:'Analysis',      tags:['independent','longform'], notes:'Technology in the Global South. Completely absent from most tech media.',                     url:'https://restofworld.org/feed/latest' },
+  { id:'logic-mag',   cat:'tech', name:'Logic Magazine',        flag:'🌐', cc:'--', lang:'en', region:'Analysis',      tags:['independent','longform'], notes:'Critical tech journalism. Political economy of technology. Quarterly but dense.',             url:'https://logicmag.io/feed.xml' },
+  { id:'schneier',    cat:'tech', name:'Schneier on Security',  flag:'🇺🇸', cc:'US', lang:'en', region:'Blogs',         tags:['independent'],            notes:'Bruce Schneier\'s blog. The most authoritative security and cryptography voice in public.',    url:'https://www.schneier.com/feed/atom/' },
+  { id:'hn',          cat:'tech', name:'Hacker News',           flag:'🌐', cc:'US', lang:'en', region:'Community',     tags:['community'],              notes:'Noisy but collectively intelligent. Nothing else surfaces obscure technical papers like this.', url:'https://hnrss.org/frontpage' },
+  // ── SCIENCE ───────────────────────────────────────────────────────────────
+  { id:'quanta',      cat:'science', name:'Quanta Magazine',    flag:'🇺🇸', cc:'US', lang:'en', region:'Journalism',   tags:['independent','longform'], notes:'Best science journalism alive. Rigorous and readable. Covers math, physics, biology, CS.',    url:'https://www.quantamagazine.org/feed/' },
+  { id:'nature-news', cat:'science', name:'Nature News',        flag:'🇬🇧', cc:'GB', lang:'en', region:'Journals',     tags:['institutional'],          notes:'News and comment section of Nature. Not paywalled. Covers high-impact research across all sciences.', url:'https://www.nature.com/nature.rss' },
+  { id:'science-mag', cat:'science', name:'Science Magazine',   flag:'🇺🇸', cc:'US', lang:'en', region:'Journals',     tags:['institutional'],          notes:'AAAS journal news section. Peer of Nature. Strong on policy implications of research.',       url:'https://www.science.org/rss/news_current.xml' },
+  { id:'new-sci',     cat:'science', name:'New Scientist',      flag:'🇬🇧', cc:'GB', lang:'en', region:'Journalism',   tags:['independent'],            notes:'More accessible than Nature/Science. Broader, UK-based. Good on emerging research.',           url:'https://www.newscientist.com/feed/home/' },
+  { id:'nautilus',    cat:'science', name:'Nautilus',           flag:'🇺🇸', cc:'US', lang:'en', region:'Journalism',   tags:['independent','longform'], notes:'Long-form, explicitly interdisciplinary. Science, philosophy, and culture in conversation.',   url:'http://nautil.us/rss/all' },
+  { id:'phys-org',    cat:'science', name:'Phys.org',           flag:'🌐', cc:'--', lang:'en', region:'Wire',         tags:['wire'],                   notes:'Wire service for physics, astronomy, chemistry. High volume. Good for breadth.',               url:'https://phys.org/rss-feed/' },
+  { id:'arxiv-ai',    cat:'science', name:'arXiv CS·AI',        flag:'🌐', cc:'--', lang:'en', region:'Preprints',    tags:['institutional'],          notes:'Raw AI preprints. Very noisy, very current. Nothing is more up-to-date on ML research.',       url:'https://rss.arxiv.org/rss/cs.AI' },
+  // ── HUMANITIES & CULTURE ──────────────────────────────────────────────────
+  { id:'paris-rev',   cat:'humanities', name:'The Paris Review',      flag:'🇺🇸', cc:'US', lang:'en', region:'Literature', tags:['independent','longform'], notes:'Fiction, poetry, and the best author interviews in print. A benchmark of literary culture.',  url:'https://www.theparisreview.org/feed/' },
+  { id:'lrb',         cat:'humanities', name:'London Review of Books', flag:'🇬🇧', cc:'GB', lang:'en', region:'Essays',    tags:['independent','longform'], notes:'Best long-form intellectual essays in English. Politics, history, literature, art.',          url:'https://www.lrb.co.uk/feeds/articles' },
+  { id:'nyrb',        cat:'humanities', name:'NY Review of Books',    flag:'🇺🇸', cc:'US', lang:'en', region:'Essays',    tags:['independent','longform'], notes:'Peer of the LRB. More American in scope. Excellent on history and politics.',                 url:'https://www.nybooks.com/feed/' },
+  { id:'eurozine',    cat:'humanities', name:'Eurozine',               flag:'🇪🇺', cc:'EU', lang:'en', region:'Essays',    tags:['independent','longform'], notes:'Pan-European cultural and political essays. Genuinely multilingual. Unique in scope.',        url:'https://www.eurozine.com/feed/' },
+  { id:'aeon',        cat:'humanities', name:'Aeon',                   flag:'🌐', cc:'--', lang:'en', region:'Essays',    tags:['independent','longform'], notes:'Philosophy, psychology, humanities essays. One of the best general intellectual publications.', url:'https://aeon.co/feed.rss' },
+  { id:'public-dom',  cat:'humanities', name:'Public Domain Review',  flag:'🌐', cc:'--', lang:'en', region:'History',   tags:['independent','longform'], notes:'History of ideas through public domain texts and images. Completely unique.',                  url:'https://publicdomainreview.org/rss.xml' },
+  { id:'jstor-daily', cat:'humanities', name:'JSTOR Daily',           flag:'🇺🇸', cc:'US', lang:'en', region:'Essays',    tags:['institutional'],          notes:'Accessible essays drawing on JSTOR content. Good bridge between academic and general reader.', url:'https://daily.jstor.org/feed/' },
+  { id:'3qd',         cat:'humanities', name:'3 Quarks Daily',        flag:'🌐', cc:'US', lang:'en', region:'Curated',   tags:['community'],              notes:'Human-curated links across science, humanities, arts, politics. Editorially opinionated.',    url:'https://3quarksdaily.com/feed' },
+  // ── ECONOMICS ─────────────────────────────────────────────────────────────
+  { id:'voxeu',       cat:'economics', name:'VoxEU',                  flag:'🇪🇺', cc:'EU', lang:'en', region:'Research',     tags:['institutional'],          notes:'Economic research translated for policymakers. By CEPR. Free. Rigorous.',                    url:'https://cepr.org/feed' },
+  { id:'proj-syn',    cat:'economics', name:'Project Syndicate',      flag:'🌐', cc:'--', lang:'en', region:'Opinion',      tags:['independent'],            notes:'Global op-eds from economists and policymakers. Multilingual. Bretton Woods adjacent.',      url:'https://www.project-syndicate.org/rss' },
+  { id:'imf-blog',    cat:'economics', name:'IMF Blog',               flag:'🌐', cc:'--', lang:'en', region:'Institutional', tags:['institutional'],          notes:'Institutional but globally scoped. Good on developing economies and monetary policy.',       url:'https://www.imf.org/en/News/Rss' },
+  { id:'marginal-rev',cat:'economics', name:'Marginal Revolution',    flag:'🇺🇸', cc:'US', lang:'en', region:'Blogs',        tags:['independent'],            notes:'Tyler Cowen\'s blog. Idiosyncratic, genuinely broad — economics, culture, books, food.',     url:'https://feeds.feedburner.com/marginalrevolution/hJhL' },
+  { id:'nber',        cat:'economics', name:'NBER Digest',            flag:'🇺🇸', cc:'US', lang:'en', region:'Research',     tags:['institutional'],          notes:'National Bureau of Economic Research working papers digest. Dry but important.',             url:'https://www.nber.org/rss/new_working_papers.xml' },
 ];
 // ─── STATE ───────────────────────────────────────────────────────────────────
 const S = {
@@ -662,29 +909,69 @@ const S = {
   feed: 'all', sort: 'recent',
   unread: false, compact: false,
   query: '', active: null, counts: {},
+  fetchedCats: new Set(['world-news']),
+  cache: {},
 };
 const saveSaved = () => localStorage.setItem('px_saved', JSON.stringify([...S.saved]));
 const saveRead  = () => localStorage.setItem('px_read',  JSON.stringify([...S.read]));
 // ─── SIDEBAR ─────────────────────────────────────────────────────────────────
 function buildSidebar() {
-  const order = ['Europe','Americas','Asia-Pacific','MENA'];
-  const byR = {};
-  for (const f of FEEDS) (byR[f.region] = byR[f.region] || []).push(f);
-  document.getElementById('sb-regions').innerHTML = order.filter(r => byR[r]).map(r => `
-    <div class="sb-section">
-      <div class="sb-head">${r}</div>
-      ${byR[r].map(f => `
-        <div class="sb-item" data-id="${f.id}" onclick="doSelect('${f.id}')">
-          <span class="sb-flag">${f.flag}</span>
-          <span class="sb-name">${f.name}</span>
-          <span class="sb-lang">${f.lang}</span>
-          <button class="sb-info-btn"
-            onmouseenter="showTooltip(event,'${f.id}')"
-            onmouseleave="hideTooltip()"
-            onclick="event.stopPropagation()">?</button>
-          <span class="sb-count" id="c-${f.id}">·</span>
-        </div>`).join('')}
-    </div>`).join('');
+  const cats = [
+    { id: 'world-news',  label: 'World News',          icon: '◈' },
+    { id: 'tech',        label: 'Technology',           icon: '◌' },
+    { id: 'science',     label: 'Science',              icon: '◎' },
+    { id: 'humanities',  label: 'Humanities & Culture', icon: '◇' },
+    { id: 'economics',   label: 'Economics',            icon: '◫' },
+  ];
+  const worldOrder = ['Europe','Americas','Asia-Pacific','MENA'];
+  const vertOrder  = ['Analysis','Journalism','Institutional','Journals',
+                      'Research','Preprints','Wire','Opinion','Blogs',
+                      'Essays','Literature','History','Curated','Community'];
+  document.getElementById('sb-regions').innerHTML = cats.map(cat => {
+    const byRegion = {};
+    for (const f of FEEDS.filter(f => f.cat === cat.id))
+      (byRegion[f.region] = byRegion[f.region] || []).push(f);
+    const order = cat.id === 'world-news' ? worldOrder : vertOrder;
+    const regions = order.filter(r => byRegion[r]);
+    return `
+      <div class="sb-cat-block" data-cat="${cat.id}">
+        <div class="sb-cat-header${cat.id === 'world-news' ? ' active' : ''}"
+             onclick="toggleCatSection('${cat.id}')">
+          <span>${cat.icon}</span>
+          <span>${cat.label}</span>
+          <span class="sb-cat-toggle" id="ct-${cat.id}">${cat.id === 'world-news' ? '▾' : '▸'}</span>
+        </div>
+        <div class="sb-cat-feeds${cat.id === 'world-news' ? '' : ' collapsed'}" id="cf-${cat.id}">
+          <div class="sb-item" data-id="${cat.id}" onclick="doSelect('${cat.id}')">
+            <span class="sb-flag" style="opacity:0.4">—</span>
+            <span class="sb-name" style="font-style:italic">all ${cat.label.toLowerCase()}</span>
+          </div>
+          ${regions.map(region => `
+            <div class="sb-head">${region}</div>
+            ${byRegion[region].map(f => `
+              <div class="sb-item" data-id="${f.id}" onclick="doSelect('${f.id}')">
+                <span class="sb-cc">${f.cc || '--'}</span>
+                <span class="sb-name">${f.name}</span>
+                <span class="sb-lang">${f.lang}</span>
+                ${f.notes ? `<button class="sb-info-btn"
+                  onmouseenter="showTooltip(event,'${f.id}')"
+                  onmouseleave="hideTooltip()"
+                  onclick="event.stopPropagation()">?</button>` : ''}
+                <span class="sb-count" id="c-${f.id}">·</span>
+              </div>`).join('')}
+          `).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+function toggleCatSection(catId) {
+  const feeds = document.getElementById('cf-' + catId);
+  const toggle = document.getElementById('ct-' + catId);
+  const isCollapsed = feeds.classList.toggle('collapsed');
+  toggle.textContent = isCollapsed ? '▸' : '▾';
+  if (!isCollapsed && !S.fetchedCats.has(catId)) {
+    loadCategory(catId, true);
+  }
 }
 // ─── FETCH ───────────────────────────────────────────────────────────────────
 const stripHtml = s => { const d = document.createElement('div'); d.innerHTML = s; return (d.textContent||'').replace(/\s+/g,' ').trim(); };
@@ -696,43 +983,69 @@ async function fetchOne(f) {
     const d = await r.json();
     if (d.status !== 'ok') throw 0;
     return (d.items||[]).map(i => ({
-      id: i.guid||i.link||Math.random().toString(36),
-      feedId: f.id, name: f.name, flag: f.flag, lang: f.lang,
-      title: i.title||'',
-      desc:  i.description ? stripHtml(i.description).slice(0,300) : '',
-      link:  i.link||'',
-      date:  i.pubDate ? +new Date(i.pubDate) : Date.now(),
+      id:      i.guid||i.link||Math.random().toString(36),
+      feedId:  f.id,
+      cat:     f.cat,
+      name:    f.name,
+      flag:    f.flag,
+      cc:      f.cc || '--',
+      lang:    f.lang,
+      title:   i.title||'',
+      desc:    i.description ? stripHtml(i.description).slice(0,400) : '',
+      link:    i.link||'',
+      date:    i.pubDate ? +new Date(i.pubDate) : Date.now(),
       readMin: Math.max(1, Math.round((i.description ? stripHtml(i.description).split(/\s+/).length : 50) / 200)),
     }));
   } catch { return []; }
 }
-async function loadAll() {
-  document.getElementById('articles').innerHTML =
-    `<div class="state-row"><div class="spinner"></div> fetching ${FEEDS.length} feeds…</div>`;
-  const res = await Promise.allSettled(FEEDS.map(fetchOne));
-  S.articles = [];
-  res.forEach((r,i) => {
+async function loadCategory(cat, silent = false) {
+  if (S.fetchedCats.has(cat) && cat !== 'all') return;
+  S.fetchedCats.add(cat);
+  const feeds = cat === 'all' ? FEEDS : FEEDS.filter(f => f.cat === cat);
+  if (!silent) {
+    document.getElementById('articles').innerHTML =
+      `<div class="state-row"><div class="spinner"></div> fetching ${feeds.length} feeds…</div>`;
+  }
+  const res = await Promise.allSettled(feeds.map(fetchOne));
+  let newArticles = [];
+  res.forEach((r, i) => {
     if (r.status !== 'fulfilled') return;
-    S.articles.push(...r.value);
-    S.counts[FEEDS[i].id] = r.value.length;
-    const el = document.getElementById('c-'+FEEDS[i].id);
+    newArticles.push(...r.value);
+    S.counts[feeds[i].id] = r.value.length;
+    const el = document.getElementById('c-' + feeds[i].id);
     if (el) el.textContent = r.value.length || '·';
   });
-  S.articles.sort((a,b) => b.date - a.date);
-  const seen = new Set();
-  S.articles = S.articles.filter(a => {
+  const existing = new Set(S.articles.map(a => a.title.toLowerCase().slice(0,50)));
+  newArticles = newArticles.filter(a => {
     const k = a.title.toLowerCase().slice(0,50);
-    if (seen.has(k)) return false; seen.add(k); return true;
+    if (existing.has(k)) return false;
+    existing.add(k); return true;
   });
+  S.articles.push(...newArticles);
+  S.articles.sort((a,b) => b.date - a.date);
   document.getElementById('c-all').textContent = S.articles.length;
   document.getElementById('updated').textContent = 'updated just now';
   updateStats(); render();
 }
+function refresh() {
+  S.articles = [];
+  S.fetchedCats = new Set();
+  S.counts = {};
+  loadCategory('world-news');
+}
 // ─── RENDER ───────────────────────────────────────────────────────────────────
+const CATS = new Set(['world-news','tech','science','humanities','economics']);
 function visible() {
   let a = S.articles;
-  if (S.feed === 'saved') a = a.filter(x => S.saved.has(x.id));
-  else if (S.feed !== 'all') a = a.filter(x => x.feedId === S.feed);
+  if (S.feed === 'saved') {
+    a = a.filter(x => S.saved.has(x.id));
+  } else if (S.feed === 'all') {
+    // show all fetched so far
+  } else if (CATS.has(S.feed)) {
+    a = a.filter(x => x.cat === S.feed);
+  } else {
+    a = a.filter(x => x.feedId === S.feed);
+  }
   if (S.unread) a = a.filter(x => !S.read.has(x.id));
   if (S.query) { const q=S.query.toLowerCase(); a = a.filter(x => x.title.toLowerCase().includes(q)||x.desc.toLowerCase().includes(q)); }
   if (S.sort === 'source') a = [...a].sort((x,y) => x.name.localeCompare(y.name));
@@ -743,45 +1056,72 @@ function render() {
   const list = visible();
   const wrap = document.getElementById('articles');
   wrap.className = S.compact ? 'compact' : '';
-  // translate bar
-  const nonEn = S.feed !== 'all' && list.some(a => a.lang !== 'en');
-  document.getElementById('xlate-bar').className = nonEn ? '' : 'hide';
   if (!list.length) { wrap.innerHTML = '<div id="empty">no articles</div>'; return; }
   wrap.innerHTML = list.map(a => {
-    const isActive = S.active === a.id;
-    const badge  = a.lang !== 'en' ? `<span class="a-badge">${a.lang}</span>` : '';
-    const xlate  = a.lang !== 'en'
-      ? `<button class="a-xlate-btn" onclick="event.stopPropagation();inlineXlate(this,'${esc(a.title)}','${a.lang}')">⟳ translate</button>` : '';
     const isSaved = S.saved.has(a.id);
-    return `<div class="article${S.read.has(a.id)?' read':''}${isActive?' active':''}" data-id="${esc(a.id)}" onclick="openReader('${esc(a.id)}')">
+    const langBadge = a.lang !== 'en'
+      ? `<span class="a-lang">${a.lang}</span>` : '';
+    const xlateAction = a.lang !== 'en'
+      ? `<button class="a-action-btn" onclick="event.stopPropagation();inlineXlate(this,'${esc(a.title)}','${a.lang}')">⟳ translate</button>` : '';
+    return `<div class="article${S.read.has(a.id)?' read':''}${S.active===a.id?' active':''}"
+                 data-id="${esc(a.id)}"
+                 onclick="openReader('${esc(a.id)}')">
       <div class="a-meta">
-        <span class="a-flag">${a.flag}</span>
+        <span class="a-cc">${esc(a.cc||'--')}</span>
         <span class="a-src">${esc(a.name)}</span>
+        ${langBadge}
         <span class="a-dot">·</span>
         <span class="a-time">${ago(a.date)}</span>
-        <span class="a-read-time">${a.readMin}m</span>
+        <span class="a-dot">·</span>
+        <span class="a-read-time">${a.readMin||1}m</span>
       </div>
       <div class="a-title">${esc(a.title)}</div>
-      ${badge}
-      <button class="a-save-btn${isSaved?' saved':''}" onclick="event.stopPropagation();toggleSave('${esc(a.id)}')">${isSaved?'◆':'◇'}</button>
       <div class="a-desc">${esc(a.desc)}</div>
-      ${xlate}
-      <a class="a-open-link" href="${esc(a.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗ open full article</a>
+      <div class="a-actions">
+        <button class="a-action-btn${isSaved?' saved':''}"
+          onclick="event.stopPropagation();toggleSave('${esc(a.id)}')">${isSaved?'◆ saved':'◇ save'}</button>
+        <span class="a-dot">·</span>
+        <a class="a-open-link" href="${esc(a.link)}" target="_blank" rel="noopener"
+          onclick="event.stopPropagation()">↗ open</a>
+        ${xlateAction ? `<span class="a-dot">·</span>${xlateAction}` : ''}
+      </div>
     </div>`;
   }).join('');
 }
 // ─── CONTROLS ────────────────────────────────────────────────────────────────
 function doSelect(id) {
   S.feed = id;
-  // close mobile sidebar if open
   document.getElementById('sidebar')?.classList.remove('open');
   document.getElementById('sidebar-overlay')?.classList.remove('open');
   const mt = document.getElementById('mob-toggle');
-  if (mt) mt.textContent = '☰ sources';
-  document.querySelectorAll('.sb-item').forEach(el => el.classList.toggle('active', el.dataset.id===id));
-  const f = FEEDS.find(x => x.id===id);
-  document.getElementById('feed-name').textContent = id==='all' ? 'all sources' : id==='saved' ? 'saved' : (f?.name||id);
-  document.getElementById('feed-info').textContent = id==='all' ? `${S.articles.length} articles · ${FEEDS.length} sources` : id==='saved' ? `${S.saved.size} saved` : `${S.counts[id]||0} articles`;
+  if (mt) mt.textContent = '☰';
+  document.querySelectorAll('.sb-item').forEach(el =>
+    el.classList.toggle('active', el.dataset.id === id));
+  const f = FEEDS.find(x => x.id === id);
+  const catLabels = {
+    'world-news': 'world news', 'tech': 'technology',
+    'science': 'science', 'humanities': 'humanities & culture',
+    'economics': 'economics'
+  };
+  if (id === 'all') {
+    document.getElementById('feed-name').textContent = 'all sources';
+    document.getElementById('feed-info').textContent =
+      `${S.articles.length} articles · ${FEEDS.length} sources`;
+  } else if (id === 'saved') {
+    document.getElementById('feed-name').textContent = 'saved';
+    document.getElementById('feed-info').textContent = `${S.saved.size} saved`;
+  } else if (catLabels[id]) {
+    document.getElementById('feed-name').textContent = catLabels[id];
+    const catArticles = S.articles.filter(x => x.cat === id);
+    const catFeeds = FEEDS.filter(x => x.cat === id);
+    document.getElementById('feed-info').textContent =
+      `${catArticles.length} articles · ${catFeeds.length} sources`;
+    if (!S.fetchedCats.has(id)) { loadCategory(id); return; }
+  } else {
+    document.getElementById('feed-name').textContent = f?.name || id;
+    document.getElementById('feed-info').textContent = `${S.counts[id] || 0} articles`;
+    if (f && !S.fetchedCats.has(f.cat)) { loadCategory(f.cat); return; }
+  }
   render();
 }
 function doSort(s) {
@@ -792,7 +1132,7 @@ function doSort(s) {
 }
 function toggleUnread()  { S.unread=!S.unread;  document.getElementById('btn-unread').classList.toggle('on',S.unread);  render(); }
 function toggleCompact() { S.compact=!S.compact; document.getElementById('btn-compact').classList.toggle('on',S.compact); render(); }
-function doRefresh() { S.articles=[]; loadAll(); }
+function doRefresh() { refresh(); }
 function updateStats() {
   document.getElementById('st-a').textContent = S.articles.length;
   document.getElementById('st-s').textContent = new Set(S.articles.map(a=>a.feedId)).size;
@@ -805,11 +1145,11 @@ function toggleSave(id) {
   saveSaved();
   document.getElementById('c-saved').textContent = S.saved.size;
   // update the button in place without full re-render
-  const card = document.querySelector(`.article[data-id="${id}"] .a-save-btn`);
+  const card = document.querySelector(`.article[data-id="${id}"] .a-action-btn`);
   if (card) {
     const now = S.saved.has(id);
     card.classList.toggle('saved', now);
-    card.textContent = now ? '◆' : '◇';
+    card.textContent = now ? '◆ saved' : '◇ save';
   }
   // also update reader save button if open
   const rBtn = document.getElementById('r-save-btn');
@@ -828,6 +1168,7 @@ function openReader(id) {
     el.classList.toggle('active', el.dataset.id===id);
     if (el.dataset.id===id) el.classList.remove('read');
   });
+  if (window.innerWidth <= 640) { openModal(a); return; }
   document.getElementById('r-flag').textContent = a.flag;
   document.getElementById('r-src').textContent  = a.name;
   document.getElementById('r-time').textContent = ' · '+ago(a.date);
@@ -860,6 +1201,40 @@ function closeReader() {
   document.querySelectorAll('.article.active').forEach(el => el.classList.remove('active'));
 }
 function openLink() { const a=S.articles.find(x=>x.id===S.active); if(a) window.open(a.link,'_blank','noopener'); }
+// ─── MOBILE MODAL ────────────────────────────────────────────────────────────
+function openModal(a) {
+  document.getElementById('modal-flag').textContent = a.flag;
+  document.getElementById('modal-src').textContent  = a.name;
+  document.getElementById('modal-time').textContent = ' · '+ago(a.date);
+  document.getElementById('modal-title').textContent = a.title;
+  document.getElementById('modal-date').textContent  = new Date(a.date).toLocaleString();
+  document.getElementById('modal-desc').textContent  = a.desc||'—';
+  document.getElementById('modal-xlated').className = '';
+  document.getElementById('modal-xlated').textContent = '';
+  document.getElementById('modal-xlate-btn').textContent = '⟳ translate to english';
+  document.getElementById('modal-xlate-wrap').style.display = a.lang!=='en' ? '' : 'none';
+  document.getElementById('modal-full-link').href = a.link;
+  const feed = FEEDS.find(f => f.id === a.feedId);
+  document.getElementById('modal-src-notes-text').textContent = feed?.notes || '';
+  document.getElementById('modal-src-tags').innerHTML = (feed?.tags||[]).map(t =>
+    `<span class="src-tag ${t.replace('-','')}">${t}</span>`
+  ).join('');
+  document.getElementById('article-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('article-modal').classList.remove('open');
+  S.active = null;
+  document.querySelectorAll('.article.active').forEach(el => el.classList.remove('active'));
+}
+function openModalLink() { const a=S.articles.find(x=>x.id===S.active); if(a) window.open(a.link,'_blank','noopener'); }
+async function translateModal() {
+  const a=S.articles.find(x=>x.id===S.active); if(!a) return;
+  const btn=document.getElementById('modal-xlate-btn');
+  btn.textContent='⟳ translating…';
+  const res=await xlate(a.title+'\n\n'+a.desc, a.lang);
+  if (res) { document.getElementById('modal-xlated').textContent=res; document.getElementById('modal-xlated').className='show'; btn.textContent='✓ translated'; }
+  else btn.textContent='✗ failed';
+}
 // ─── TRANSLATION ─────────────────────────────────────────────────────────────
 async function xlate(text, from='auto') {
   try {
@@ -882,13 +1257,7 @@ async function inlineXlate(btn, title, lang) {
   if (res) { btn.textContent=res; btn.style.opacity='1'; btn.style.color='var(--text-dim)'; btn.onclick=null; }
   else btn.textContent='✗';
 }
-function translateAll() {
-  document.querySelectorAll('.a-xlate-btn').forEach(btn => {
-    const m=btn.getAttribute('onclick')?.match(/inlineXlate\(this,'(.+?)','(.+?)'\)/);
-    if(m) inlineXlate(btn, m[1].replace(/&#39;/g,"'"), m[2]);
-  });
-  document.getElementById('xlate-bar').classList.add('hide');
-}
+
 // ─── MOBILE SIDEBAR ──────────────────────────────────────────────────────────
 function toggleMobileSidebar() {
   const sb = document.getElementById('sidebar');
@@ -921,11 +1290,11 @@ const searchEl = document.getElementById('search');
 searchEl.addEventListener('input', e => { S.query=e.target.value.trim(); render(); });
 document.addEventListener('keydown', e => {
   if (e.key==='/' && document.activeElement!==searchEl) { e.preventDefault(); searchEl.focus(); }
-  if (e.key==='Escape') { if(document.activeElement===searchEl) searchEl.blur(); else closeReader(); }
+  if (e.key==='Escape') { if(document.activeElement===searchEl) searchEl.blur(); else { closeModal(); closeReader(); } }
 });
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 buildSidebar();
-loadAll();
+loadCategory('world-news');
 </script>
 </body>
 </html>
