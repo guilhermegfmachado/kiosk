@@ -491,7 +491,17 @@
     }
 
     @media (max-width: 640px) {
-      #mob-toggle { display: flex; align-items: center; gap: 0.3rem; }
+      #mob-toggle { display: flex; align-items: center; }
+
+      /* Declutter topbar — only keep wordmark, search, theme */
+      #topbar { gap: 0.5rem; padding: 0 0.6rem; }
+      #topbar-right { gap: 0.4rem; }
+      #pulse { display: none; }
+      #updated { display: none; }
+      #btn-unread { display: none; }
+      #btn-compact { display: none; }
+      #btn-refresh { display: none; }
+      #search-wrap { max-width: none; }
 
       #sidebar {
         position: fixed;
@@ -721,7 +731,7 @@
 </head>
 <body>
 <div id="topbar">
-  <button id="mob-toggle" onclick="toggleMobileSidebar()">☰ sources</button>
+  <button id="mob-toggle" onclick="toggleMobileSidebar()">☰</button>
   <div id="wordmark">活字</div>
   <div id="search-wrap">
     <input type="search" id="search" placeholder="search headlines…" autocomplete="off">
@@ -729,7 +739,7 @@
   <div id="topbar-right">
     <div id="pulse"></div>
     <div id="updated">—</div>
-    <button class="t-btn" onclick="doRefresh()">↺ refresh</button>
+    <button class="t-btn" id="btn-refresh" onclick="doRefresh()">↺ refresh</button>
     <button class="t-btn" id="btn-unread" onclick="toggleUnread()">unread</button>
     <button class="t-btn" id="btn-compact" onclick="toggleCompact()">compact</button>
     <button class="t-btn" id="btn-theme" onclick="toggleTheme()" title="toggle light/dark">◑</button>
@@ -1162,7 +1172,7 @@ function doSelect(id) {
   document.getElementById('sidebar')?.classList.remove('open');
   document.getElementById('sidebar-overlay')?.classList.remove('open');
   const mt = document.getElementById('mob-toggle');
-  if (mt) mt.textContent = '☰';
+  if (mt) mt.textContent = '☰'; // keep minimal
   document.querySelectorAll('.sb-item').forEach(el =>
     el.classList.toggle('active', el.dataset.id === id));
   const f = FEEDS.find(x => x.id === id);
@@ -1333,7 +1343,7 @@ function toggleMobileSidebar() {
   const ov = document.getElementById('sidebar-overlay');
   const open = sb.classList.toggle('open');
   ov.classList.toggle('open', open);
-  document.getElementById('mob-toggle').textContent = open ? '✕ close' : '☰ sources';
+  document.getElementById('mob-toggle').textContent = open ? '✕' : '☰';
 }
 // ─── SOURCE TOOLTIP ─────────────────────────────────────────────────────────────
 function showTooltip(e, feedId) {
